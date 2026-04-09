@@ -161,9 +161,9 @@ function render() {
             </a>
             <div class="text-secondary small mono">${slug}</div>
           </td>
-          <td class="text-end">${formatPriceCellPerMillion(m.pricing_prompt)}</td>
-          <td class="text-end">${formatPriceCellPerMillion(m.pricing_completion)}</td>
-          <td class="text-end">${formatRequestPriceCell(m.pricing_request)}</td>
+          <td class="text-end col-prompt">${formatPriceCellPerMillion(m.pricing_prompt)}</td>
+          <td class="text-end col-completion">${formatPriceCellPerMillion(m.pricing_completion)}</td>
+          <td class="text-end col-request">${formatRequestPriceCell(m.pricing_request)}</td>
           <td class="text-end"><span class="calc mono">${formatUsd(calc)}</span></td>
         </tr>
       `;

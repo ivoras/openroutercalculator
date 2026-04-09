@@ -97,7 +97,7 @@
               <label class="form-check-label" for="perRequestToggle">Per-request pricing</label>
             </div>
             <div class="small text-secondary mt-1">
-              When enabled, the per-request count multiplies the token-based estimate.
+              When enabled, the calculated price adds the model's per-request price for each request.
             </div>
           </div>
 
@@ -127,7 +127,11 @@
                 <th class="text-end" style="min-width: 160px">Prompt ($/1M)</th>
                 <th class="text-end" style="min-width: 170px">Completion ($/1M)</th>
                 <th class="text-end" style="min-width: 140px">Request</th>
-                <th class="text-end" style="min-width: 190px">Calculated</th>
+                <th id="calculatedHeader" class="text-end" style="min-width: 190px; cursor: pointer">
+                  <span class="user-select-none">
+                    Calculated <span id="calculatedSortIcon" class="text-secondary"></span>
+                  </span>
+                </th>
               </tr>
             </thead>
             <tbody id="modelsBody">
@@ -140,8 +144,8 @@
       </div>
 
       <div class="small text-secondary mt-3">
-        Prices shown are stored snapshots fetched from OpenRouter. Calculations use prompt + completion token counts; image/request
-        fields are displayed but not included in the calculated estimate.
+        Prices shown are stored snapshots fetched from OpenRouter. Calculations use prompt + completion token counts, and include
+        per-request pricing when enabled. Image pricing is displayed but not included in the calculated estimate.
       </div>
     </div>
 

@@ -152,13 +152,14 @@ function render() {
   tbody.innerHTML = visible
     .map((m) => {
       const calc = calculateForModel(m);
+      const slug = escapeHtml(m.canonical_slug || "");
       return `
         <tr>
           <td>
-            <div class="fw-semibold fs-5">${escapeHtml(m.name || "")}</div>
-            <div class="text-secondary small mono">${escapeHtml(
-              m.canonical_slug || ""
-            )}</div>
+            <a href="https://openrouter.ai/${slug}" class="model-link text-decoration-none text-reset" style="text-underline-offset: 3px; text-decoration-thickness: 1px;" target="_blank" rel="noopener noreferrer">
+              <div class="fw-semibold fs-5">${escapeHtml(m.name || "")}</div>
+            </a>
+            <div class="text-secondary small mono">${slug}</div>
           </td>
           <td class="text-end">${formatPriceCellPerMillion(m.pricing_prompt)}</td>
           <td class="text-end">${formatPriceCellPerMillion(m.pricing_completion)}</td>

@@ -70,6 +70,31 @@
         font-weight: 700;
         color: var(--orc-accent);
       }
+
+      /* Mobile-first: show fewer pricing columns on narrower screens. */
+      .col-prompt,
+      .col-completion,
+      .col-request {
+        display: none;
+      }
+
+      @media (min-width: 768px) {
+        .col-prompt {
+          display: table-cell;
+        }
+      }
+
+      @media (min-width: 992px) {
+        .col-completion {
+          display: table-cell;
+        }
+      }
+
+      @media (min-width: 1200px) {
+        .col-request {
+          display: table-cell;
+        }
+      }
     </style>
   </head>
   <body>
@@ -128,9 +153,9 @@
             <thead>
               <tr>
                 <th style="min-width: 320px">Model</th>
-                <th class="text-end" style="min-width: 160px">Prompt ($/1M)</th>
-                <th class="text-end" style="min-width: 170px">Completion ($/1M)</th>
-                <th class="text-end" style="min-width: 140px">Request</th>
+                <th class="text-end col-prompt" style="min-width: 160px">Prompt ($/1M)</th>
+                <th class="text-end col-completion" style="min-width: 170px">Completion ($/1M)</th>
+                <th class="text-end col-request" style="min-width: 140px">Request</th>
                 <th id="calculatedHeader" class="text-end" style="min-width: 190px; cursor: pointer">
                   <span class="user-select-none">
                     Calculated <span id="calculatedSortIcon" class="text-secondary"></span>
@@ -150,6 +175,10 @@
       <div class="small text-secondary mt-3">
         Prices shown are stored snapshots fetched from OpenRouter. Calculations use prompt + completion token counts, and include
         per-request pricing when enabled. Image pricing is displayed but not included in the calculated estimate.
+      </div>
+
+      <div class="small text-secondary mt-2">
+        Tip: Use "Per-request pricing" to multiply by any factor—for example, enter hourly token counts with 24 requests for daily costs.
       </div>
     </div>
 

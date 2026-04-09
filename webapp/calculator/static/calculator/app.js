@@ -181,7 +181,7 @@ function renderLastUpdated() {
     return;
   }
 
-  el.textContent = ` · Last updated: ${d.toLocaleString()}`;
+  el.textContent = ` · Last updated: ${d.toISOString()}`;
 }
 
 function escapeHtml(s) {

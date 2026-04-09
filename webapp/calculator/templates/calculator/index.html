@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OpenRouter Calculator</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+
+    <style>
+      :root {
+        --orc-bg: #0b1220;
+        --orc-card: rgba(255, 255, 255, 0.04);
+        --orc-border: rgba(255, 255, 255, 0.12);
+        --orc-text: rgba(255, 255, 255, 0.92);
+        --orc-muted: rgba(255, 255, 255, 0.65);
+        --orc-accent: #8df0ff;
+      }
+
+      body {
+        background: radial-gradient(1200px 800px at 15% 10%, rgba(141, 240, 255, 0.18), transparent 55%),
+          radial-gradient(1100px 700px at 75% 25%, rgba(138, 180, 255, 0.12), transparent 55%),
+          var(--orc-bg);
+        color: var(--orc-text);
+      }
+
+      .orc-card {
+        background: var(--orc-card);
+        border: 1px solid var(--orc-border);
+        backdrop-filter: blur(10px);
+      }
+
+      .table thead th {
+        color: var(--orc-muted);
+        font-weight: 600;
+        border-color: var(--orc-border) !important;
+      }
+
+      .table td,
+      .table th {
+        border-color: var(--orc-border) !important;
+      }
+
+      .table-hover tbody tr:hover {
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      .mono {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      }
+
+      .price-pill {
+        display: inline-block;
+        padding: 0.15rem 0.45rem;
+        border: 1px solid var(--orc-border);
+        border-radius: 999px;
+        color: var(--orc-muted);
+      }
+
+      .calc {
+        font-weight: 700;
+        color: var(--orc-accent);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container py-4">
+      <div class="d-flex align-items-end justify-content-between flex-wrap gap-3 mb-3">
+        <div>
+          <div class="h2 mb-0">OpenRouter Calculator</div>
+          <div class="text-secondary">
+            Estimate OpenRouter model usage cost from pricing snapshots.
+            <span id="lastUpdated" class="mono"></span>
+          </div>
+        </div>
+        <div class="text-end">
+          <label class="form-label mb-1 text-secondary" for="nameFilter">Filter (name or id)</label>
+          <input
+            id="nameFilter"
+            class="form-control mono"
+            placeholder="e.g. gpt, claude, mistral…"
+            autocomplete="off"
+          />
+        </div>
+      </div>
+
+      <div class="orc-card rounded-4 p-3 mb-3">
+        <div class="row g-3 align-items-end">
+          <div class="col-12 col-lg-4">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" role="switch" id="perRequestToggle" />
+              <label class="form-check-label" for="perRequestToggle">Per-request pricing</label>
+            </div>
+            <div class="small text-secondary mt-1">
+              When enabled, the per-request count multiplies the token-based estimate.
+            </div>
+          </div>
+
+          <div class="col-12 col-md-4 col-lg-3">
+            <label class="form-label text-secondary" for="inputTokens">Input tokens</label>
+            <input id="inputTokens" class="form-control mono" type="number" inputmode="numeric" min="0" step="1" value="0" />
+          </div>
+
+          <div class="col-12 col-md-4 col-lg-3">
+            <label class="form-label text-secondary" for="outputTokens">Output tokens</label>
+            <input id="outputTokens" class="form-control mono" type="number" inputmode="numeric" min="0" step="1" value="0" />
+          </div>
+
+          <div class="col-12 col-md-4 col-lg-2" id="requestsWrap" style="display: none">
+            <label class="form-label text-secondary" for="requests">Requests</label>
+            <input id="requests" class="form-control mono" type="number" inputmode="numeric" min="0" step="1" value="1" />
+          </div>
+        </div>
+      </div>
+
+      <div class="orc-card rounded-4 p-0 overflow-hidden">
+        <div class="table-responsive">
+          <table class="table table-dark table-hover align-middle mb-0">
+            <thead>
+              <tr>
+                <th style="min-width: 320px">Model</th>
+                <th class="text-end" style="min-width: 160px">Prompt ($/1M)</th>
+                <th class="text-end" style="min-width: 170px">Completion ($/1M)</th>
+                <th class="text-end" style="min-width: 140px">Request</th>
+                <th class="text-end" style="min-width: 190px">Calculated</th>
+              </tr>
+            </thead>
+            <tbody id="modelsBody">
+              <tr>
+                <td colspan="5" class="text-center text-secondary py-5">Loading models…</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="small text-secondary mt-3">
+        Prices shown are stored snapshots fetched from OpenRouter. Calculations use prompt + completion token counts; image/request
+        fields are displayed but not included in the calculated estimate.
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    {% load static %}
+    <script src="{% static 'calculator/app.js' %}"></script>
+  </body>
+</html>
+

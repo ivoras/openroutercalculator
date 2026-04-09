@@ -57,30 +57,44 @@ function getHashParams() {
   return new URLSearchParams(window.location.hash.replace(/^#/, ""));
 }
 
+function hashGet(params, shortKey, longKey) {
+  const v = params.get(shortKey);
+  return v === null || v === "" ? params.get(longKey) : v;
+}
+
 function applyHashToState() {
   const params = getHashParams();
 
-  state.filter = params.get("nameFilter") || "";
-  state.perRequest = parseHashBool(params.get("perRequestToggle"), false);
-  state.inputTokens = clampInt(params.get("inputTokens"), 0);
-  state.outputTokens = clampInt(params.get("outputTokens"), 0);
-  state.requests = clampInt(params.get("requests"), 1) || 1;
-  state.sortByCalculated = parseHashBool(params.get("sortByCalculated"), false);
+  state.filter = hashGet(params, "f", "nameFilter") || "";
+  state.perRequest = parseHashBool(
+    hashGet(params, "t", "perRequestToggle"),
+    false
+  );
+  state.inputTokens = clampInt(hashGet(params, "i", "inputTokens"), 0);
+  state.outputTokens = clampInt(hashGet(params, "o", "outputTokens"), 0);
+  state.requests = clampInt(hashGet(params, "r", "requests"), 1) || 1;
+  state.sortByCalculated = parseHashBool(
+    hashGet(params, "s", "sortByCalculated"),
+    false
+  );
 
-  const sortDir = params.get("sortCalculatedDir");
-  state.sortCalculatedDir = sortDir === "asc" ? "asc" : "desc";
+  const sortDir = hashGet(params, "d", "sortCalculatedDir");
+  if (sortDir === "a" || sortDir === "asc") state.sortCalculatedDir = "asc";
+  else state.sortCalculatedDir = "desc";
 }
 
 function updateHashFromState() {
   const params = new URLSearchParams();
 
-  params.set("nameFilter", state.filter);
-  params.set("perRequestToggle", state.perRequest ? "1" : "0");
-  params.set("inputTokens", String(state.inputTokens));
-  params.set("outputTokens", String(state.outputTokens));
-  params.set("requests", String(state.requests));
-  params.set("sortByCalculated", state.sortByCalculated ? "1" : "0");
-  params.set("sortCalculatedDir", state.sortCalculatedDir);
+  if (state.filter) params.set("f", state.filter);
+  if (state.perRequest) params.set("t", "1");
+  if (state.inputTokens !== 0) params.set("i", String(state.inputTokens));
+  if (state.outputTokens !== 0) params.set("o", String(state.outputTokens));
+  if (state.requests !== 1) params.set("r", String(state.requests));
+  if (state.sortByCalculated) {
+    params.set("s", "1");
+    if (state.sortCalculatedDir === "asc") params.set("d", "a");
+  }
 
   const nextHash = params.toString();
   const nextUrl = `${window.location.pathname}${window.location.search}#${nextHash}`;

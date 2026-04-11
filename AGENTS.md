@@ -15,6 +15,9 @@ OpenRouter Calculator is a Django-based web application that provides a UI for e
 - **Run Server**: `python3 webapp/manage.py runserver`
 - **Migrations**: `python3 webapp/manage.py migrate`
 
+## Static assets (CSS / JS)
+- **Always run** `python3 webapp/manage.py collectstatic` after modifying any **CSS** or **JavaScript** (for example under `webapp/calculator/static/`). That refreshes files collected into `webapp/static/` for deployment and keeps copies aligned. Use `--noinput` in automation when appropriate.
+
 ## Calculated column (front-end)
 Values in the **Calculated** column are computed in `webapp/calculator/static/calculator/app.js` (`calculateForModel`). For each model, snapshot fields `pricing_prompt` and `pricing_completion` are treated as **USD per input/output token** (as returned by OpenRouter and stored by the fetch command).
 

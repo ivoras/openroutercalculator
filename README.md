@@ -1,5 +1,7 @@
 # OpenRouter Calculator
 
+This project is deployed at [https://openroutercalculator.ivoras.net/](https://openroutercalculator.ivoras.net/).
+
 A web-based tool to estimate the cost of using various AI models via [OpenRouter](https://openrouter.ai/). It uses periodic snapshots of OpenRouter's pricing to provide accurate estimates based on your specific token usage and request patterns.
 
 ## Features

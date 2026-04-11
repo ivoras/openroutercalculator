@@ -36,13 +36,6 @@ function formatPriceCellPerMillion(value) {
   return `<span class="price-pill mono">$${perM.toFixed(4)}</span>`;
 }
 
-function formatRequestPriceCell(value) {
-  // pricing_request is per-request (not per-token), so don't scale.
-  const n = parsePrice(value);
-  if (!n) return `<span class="text-secondary">-</span>`;
-  return `<span class="price-pill mono">$${n.toFixed(4)}</span>`;
-}
-
 function formatUsd(value) {
   if (!Number.isFinite(value)) return "-";
   return `$${value.toFixed(6)}`;
@@ -111,7 +104,6 @@ function matchesFilter(model, filterLower) {
 function calculateForModel(model) {
   const promptPerM = parseTokenPriceToPerMillion(model.pricing_prompt);
   const completionPerM = parseTokenPriceToPerMillion(model.pricing_completion);
-  const requestPrice = parsePrice(model.pricing_request);
 
   const inTok = state.inputTokens;
   const outTok = state.outputTokens;
@@ -120,8 +112,10 @@ function calculateForModel(model) {
     promptPerM * (inTok / 1_000_000) +
     completionPerM * (outTok / 1_000_000);
 
-  const requestCost = state.perRequest ? requestPrice * state.requests : 0;
-  return tokenCost + requestCost;
+  if (!state.perRequest) {
+    return tokenCost;
+  }
+  return tokenCost * state.requests;
 }
 
 function render() {
@@ -145,7 +139,7 @@ function render() {
 
   if (!visible.length) {
     tbody.innerHTML =
-      '<tr><td colspan="5" class="text-center text-secondary py-5">No matching models.</td></tr>';
+      '<tr><td colspan="4" class="text-center text-secondary py-5">No matching models.</td></tr>';
     return;
   }
 
@@ -163,7 +157,6 @@ function render() {
           </td>
           <td class="text-end col-prompt">${formatPriceCellPerMillion(m.pricing_prompt)}</td>
           <td class="text-end col-completion">${formatPriceCellPerMillion(m.pricing_completion)}</td>
-          <td class="text-end col-request">${formatRequestPriceCell(m.pricing_request)}</td>
           <td class="text-end"><span class="calc mono">${formatUsd(calc)}</span></td>
         </tr>
       `;
@@ -309,7 +302,7 @@ async function init() {
     state.fetchedAt = Array.isArray(payload) ? null : payload.fetched_at || null;
   } catch (e) {
     const tbody = document.getElementById("modelsBody");
-    tbody.innerHTML = `<tr><td colspan="5" class="text-center text-secondary py-5">Failed to load models. Run <span class="mono">python3 webapp/manage.py fetch</span> and refresh.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="4" class="text-center text-secondary py-5">Failed to load models. Run <span class="mono">python3 webapp/manage.py fetch</span> and refresh.</td></tr>`;
     return;
   }
 

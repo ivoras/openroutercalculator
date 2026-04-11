@@ -73,8 +73,7 @@
 
       /* Mobile-first: show fewer pricing columns on narrower screens. */
       .col-prompt,
-      .col-completion,
-      .col-request {
+      .col-completion {
         display: none;
       }
 
@@ -86,12 +85,6 @@
 
       @media (min-width: 992px) {
         .col-completion {
-          display: table-cell;
-        }
-      }
-
-      @media (min-width: 1200px) {
-        .col-request {
           display: table-cell;
         }
       }
@@ -126,7 +119,7 @@
               <label class="form-check-label" for="perRequestToggle">Per-request pricing</label>
             </div>
             <div class="small text-secondary mt-1">
-              When enabled, the calculated price adds the model's per-request price for each request.
+              When enabled, each model's calculated cost is the token-based estimate multiplied by the number in Requests.
             </div>
           </div>
 
@@ -155,7 +148,6 @@
                 <th style="min-width: 320px">Model</th>
                 <th class="text-end col-prompt" style="min-width: 160px">Prompt ($/1M)</th>
                 <th class="text-end col-completion" style="min-width: 170px">Completion ($/1M)</th>
-                <th class="text-end col-request" style="min-width: 140px">Request</th>
                 <th id="calculatedHeader" class="text-end" style="min-width: 190px; cursor: pointer">
                   <span class="user-select-none">
                     Calculated <span id="calculatedSortIcon" class="text-secondary"></span>
@@ -165,7 +157,7 @@
             </thead>
             <tbody id="modelsBody">
               <tr>
-                <td colspan="5" class="text-center text-secondary py-5">Loading models…</td>
+                <td colspan="4" class="text-center text-secondary py-5">Loading models…</td>
               </tr>
             </tbody>
           </table>
@@ -173,8 +165,9 @@
       </div>
 
       <div class="small text-secondary mt-3">
-        Prices shown are stored snapshots fetched from OpenRouter. Calculations use prompt + completion token counts, and include
-        per-request pricing when enabled. Image pricing is displayed but not included in the calculated estimate.
+        Prices shown are stored snapshots fetched from OpenRouter. Calculations use prompt + completion token counts; with per-request
+        pricing enabled, that token estimate is multiplied by the request count. Image pricing is displayed but not included in the
+        calculated estimate.
       </div>
 
       <div class="small text-secondary mt-2">

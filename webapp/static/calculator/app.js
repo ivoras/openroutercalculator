@@ -94,11 +94,20 @@ function updateHashFromState() {
   window.history.replaceState(null, "", nextUrl);
 }
 
-function matchesFilter(model, filterLower) {
-  if (!filterLower) return true;
+function parseFilterSubstrings(filterText) {
+  return String(filterText || "")
+    .split(",")
+    .map((s) => s.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+function matchesFilter(model, substringsLower) {
+  if (!substringsLower.length) return true;
   const name = String(model.name || "").toLowerCase();
   const id = String(model.canonical_slug || "").toLowerCase();
-  return name.includes(filterLower) || id.includes(filterLower);
+  return substringsLower.some(
+    (sub) => name.includes(sub) || id.includes(sub)
+  );
 }
 
 function calculateForModel(model) {
@@ -120,9 +129,9 @@ function calculateForModel(model) {
 
 function render() {
   const tbody = document.getElementById("modelsBody");
-  const filterLower = state.filter.trim().toLowerCase();
+  const filterParts = parseFilterSubstrings(state.filter);
 
-  let visible = state.models.filter((m) => matchesFilter(m, filterLower));
+  let visible = state.models.filter((m) => matchesFilter(m, filterParts));
   if (state.sortByCalculated) {
     const decorated = visible.map((m, idx) => ({
       m,
